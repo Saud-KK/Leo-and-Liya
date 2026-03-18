@@ -83,6 +83,7 @@
         const bookData = {
             title: "Leo & Liya",
             authors: "Huda & Zayd",
+            editor: "Saud",
             chapters: [
                 { title: "Cover", paragraphs: [] },
                 { title: "THE FIELD TRIP", paragraphs: ["Once there lived two siblings named Leo and Liya. One day at school their teacher gave the students permission slips for a school trip. Leo and Liya’s parents gave them permission to go. Leo and Liya were very excited because they were going to the museum. On the day of the field trip Leo and Liya packed the things their teacher had told them to bring on the trip.", "On their way to the museum Leo asked Liya “What do you think it’ll be like?”", "“I don’t know” said Liya, “Let’s wait and see”", "When they reached the museum they saw broken windows, dead trees, and many other scary things.", "“Well, now you know how it is” said Liya fearfully to Leo.", "They went inside and saw bones and skeletons here and there. Teeth of whales and Dinosaurs were also there. They all saw a large room and saw a sign which read", "“Horror Movie”", "They went along with their teacher. The movie showed many ghosts catching kids away from the museum and took them to pirate ships to mop the floor and cook the food. This made the students scared.", "After the movie Leo asked Liya “Did you get scared?”", "“Yes” replied Liya, “But it’s just a movie”", "The next room they went to was called", "“The Room of Screams”", "Where they heard ghost screams. It was so scary that sometimes even the adults would cry. When someone heard the screams, they would run to the other end of the room. When they reached the other end, they will hear screams right behind them. Leo and Liya ran here and there to try and avoid the screams. Next, they went to a room called", "“The Room of Souls”", "Leo asked Liya “Is it going to get worse?”", "“Very worse” said Liya", "The room had so many boxes made of glass. And every box had a dead thing in it. All of a sudden everything in the boxes turned light blue and glowed. Then they came out of the boxes. The children screamed when all the dead things turned into ghosts and started chasing them. Then they heard some kids cry with fear. They got scared because one of the ghosts touched them. After sometime they all escaped out of the room.", "After that the teacher called out “It’s time for the Mummy Room”", "“Oh, at least mummies are dead right?” Liya asked Leo", "“Yeah” said Leo"] },
@@ -116,7 +117,7 @@
                             <h1 class="text-5xl font-title font-black">${bookData.title.toUpperCase()}</h1>
                             <div class="space-y-2 opacity-70 italic text-xl">
                                 <p>By: ${bookData.authors}</p>
-                                <p>By: ${bookData.authors}</p>
+                                <p>By: ${bookData.editor}</p>
                             </div>
                         </div>
                         <button onclick="nextChapter()" class="px-10 py-3 border-2 border-current font-title font-bold tracking-widest hover:bg-black/5">START READING</button>
