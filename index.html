@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leo & Liya - Reader</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .font-title { font-family: 'Cinzel Decorative', serif; }
+        
+        /* Theme styles */
+        .theme-light { background-color: #ffffff; color: #1a202c; }
+        .theme-sepia { background-color: #f4ecd8; color: #5b4636; }
+        .theme-dark { background-color: #1a1a1a; color: #d1d5db; }
+
+        .drop-cap {
+            float: left;
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 4rem;
+            line-height: 1;
+            padding-right: 0.5rem;
+            padding-top: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="theme-light">
+
+    <div id="app" class="min-h-screen flex flex-col">
+        <!-- Navigation Header -->
+        <header class="sticky top-0 z-40 w-full shadow-sm border-b bg-inherit">
+            <div class="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleSidebar()" class="p-2 rounded hover:bg-black/5">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
+                    <span class="font-title font-bold text-sm tracking-tight opacity-80">LEO & LIYA</span>
+                </div>
+                <div class="flex gap-4">
+                    <button onclick="setTheme('light')" class="w-6 h-6 rounded-full border bg-white"></button>
+                    <button onclick="setTheme('sepia')" class="w-6 h-6 rounded-full border bg-[#f4ecd8]"></button>
+                    <button onclick="setTheme('dark')" class="w-6 h-6 rounded-full border bg-[#1a1a1a]"></button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <div id="sidebar" class="fixed inset-0 bg-black/50 z-50 hidden">
+            <div class="w-72 h-full bg-white text-gray-900 p-6 shadow-xl" onclick="event.stopPropagation()">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="font-title font-bold text-sm">CONTENTS</h2>
+                    <button onclick="toggleSidebar()">&times;</button>
+                </div>
+                <nav id="chapter-list" class="space-y-2"></nav>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <main id="main-content" class="flex-1 w-full max-w-2xl mx-auto px-8 py-16 fade-in"></main>
+
+        <!-- Footer -->
+        <footer class="mt-auto border-t py-4 bg-inherit">
+            <div class="max-w-4xl mx-auto px-6 flex justify-between items-center text-sm font-bold font-title">
+                <button onclick="prevChapter()" id="prev-btn">PREVIOUS</button>
+                <span id="page-num" class="opacity-50"></span>
+                <button onclick="nextChapter()" id="next-btn">NEXT</button>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const bookData = {
+            title: "Leo & Liya",
+            authors: "Huda & Zayd",
+            chapters: [
+                { title: "Cover", paragraphs: [] },
+                { title: "THE FIELD TRIP", paragraphs: ["Once there lived two siblings named Leo and Liya. One day at school their teacher gave the students permission slips for a school trip. Leo and Liya’s parents gave them permission to go. Leo and Liya were very excited because they were going to the museum. On the day of the field trip Leo and Liya packed the things their teacher had told them to bring on the trip.", "On their way to the museum Leo asked Liya “What do you think it’ll be like?”", "“I don’t know” said Liya, “Let’s wait and see”", "When they reached the museum they saw broken windows, dead trees, and many other scary things.", "“Well, now you know how it is” said Liya fearfully to Leo.", "They went inside and saw bones and skeletons here and there. Teeth of whales and Dinosaurs were also there. They all saw a large room and saw a sign which read", "“Horror Movie”", "They went along with their teacher. The movie showed many ghosts catching kids away from the museum and took them to pirate ships to mop the floor and cook the food. This made the students scared.", "After the movie Leo asked Liya “Did you get scared?”", "“Yes” replied Liya, “But it’s just a movie”", "The next room they went to was called", "“The Room of Screams”", "Where they heard ghost screams. It was so scary that sometimes even the adults would cry. When someone heard the screams, they would run to the other end of the room. When they reached the other end, they will hear screams right behind them. Leo and Liya ran here and there to try and avoid the screams. Next, they went to a room called", "“The Room of Souls”", "Leo asked Liya “Is it going to get worse?”", "“Very worse” said Liya", "The room had so many boxes made of glass. And every box had a dead thing in it. All of a sudden everything in the boxes turned light blue and glowed. Then they came out of the boxes. The children screamed when all the dead things turned into ghosts and started chasing them. Then they heard some kids cry with fear. They got scared because one of the ghosts touched them. After sometime they all escaped out of the room.", "After that the teacher called out “It’s time for the Mummy Room”", "“Oh, at least mummies are dead right?” Liya asked Leo", "“Yeah” said Leo"] },
+                { title: "THE MUMMIES", paragraphs: ["When they entered the Mummy room, it was just like Egypt with so many pyramids so they went to the first one. Inside there was a tomb and so many valuable gems and coins. But one of Leo’s friend named Joe, made a loud noise. Because of the noise the tomb in the center opened and a mummy stepped out of it. Everyone ran out of the room, but Leo and Liya were too late. Soon many other mummies came and blocked the door. Many other monsters from the other rooms — the dinosaur, soul, skeleton and witches.", "“Great” said Liya, “Now, we are going to be lunch for monsters”", "“STOP!” said someone.", "“Who said that?” asked Leo", "“I don’t know” answered Liya", "“Liya, look” said Leo pointing a woman mummy.", "“BOYS, STOP!” shouted the woman at the other mummies", "“Welcome, I am the Queen of the Mummies” said the woman", "“MOM! You never let us have fun” said one of the mummies, “why should we listen to you”", "“She is your mother” roared a Dinosaur.", "“And the Mummy Queen” said one of the ghosts.", "“So, what, we are going outside to rule the world” said the eldest mummy.", "All the Mummies except the Queen ran out of the door.", "“NO! come back” called out the Queen", "But, all the mummies had run out of the room.", "“So, why did they lock us in here” Liya asked the Queen.", "“Why?” asked Leo", "“Because, I want to talk to you” answered the Queen", "“About what” said Liya, looking at the Queen", "“I had once sensed that soon my children will start hunting for humans.”, said the Queen, “And then, one day in my sleep I saw both of you in a vision. Both of you will come to this museum and help me stop my children from destroying the human world.”", "“WHAT! You saw us in a vision” said Leo.", "“Yes, I saw both of you in a vision” answered the Queen, “And I will be giving both of you powers to help me, but you must promise not to tell anyone.”", "“We promise” replied Leo and Liya looking at each other.", "“But one question, what about our teachers and friends?” asked Liya.", "“They won’t remember coming into this room. They are going back to school.” answered the Queen.", "“So, when are we going to get our powers?” said Leo excitedly.", "“After your training” said the Queen.", "“Training?” asked Leo.", "“Yes, you need to be trained if you want powers” answered the Queen.", "“So, when are we going to start our training” asked Liya.", "“You will start your training in five days. You will be training inside one of the pyramids” answered the Queen, “After five days, I want you to come to this museum and meet me here”", "“Ok” said Leo and Liya.", "That day Leo and Liya went home excited, they couldn’t believe that they were going to get powers."] },
+                { title: "THE TRAINING", paragraphs: ["After days of waiting, the fifth day finally arrived. It was a Saturday, which meant that it was a holiday, so Leo and Liya dressed up and left to the museum telling their parents that they were going to the library. When they arrived, the Queen was waiting.", "“You made it!” said the Queen, “I’ve been waiting for you. Ready for your training?”", "“Yes” said both of them", "“First I want both of you to climb that big tree” said the Queen pointing at a tree inside the pyramid. Leo and Liya climbed and climbed but couldn’t reach the top. They tried and tried but failed.", "“Let’s try again tomorrow” said the Queen.", "So, Leo and Liya went home tired. When they reached home, their parents asked them why they were so tired?", "“We raced home” said Leo looking at Liya.", "“Who won?” asked their father.", "“Leo” said Liya with a disappointed face.", "The next day they again tried and tried to reach the top of the tree. But again failed.", "“Why don’t you take a break?” asked the Queen.", "So, they took a break. The Queen brought some snacks for them to eat. They thanked the Queen and went back to climbing. But they still failed. So, they said bye to the Queen and went home.", "When they reached home, their mother asked them “So, who won this time?”", "“ME!” shouted Leo looking at Liya.", "So, on the next day they went back to the museum. The Queen had brought some snacks and juice. Leo and Liya ate some snacks and drank some mango juice. And then they went to climb the tree. They climbed and climbed but just before they reached the top they fell down on to the cushion set by the Queen at the bottom of the tree.", "On their second try, when they reached the mid portion of the tree, Liya slipped. but Leo caught her hand and pulled her back on to the branch. They continued climbing, helping each other as they reached higher and higher. And finally—they reached the top.", "“WE DID IT!” they cheered, high-fiving each other.", "“Next, I want you to practice running, jumping, and fighting.” said the Queen.", "For the next few months they practiced running, jumping and fighting. Now Leo and Liya couldn’t beat each other in racing, both of them had the same speed."] },
+                { title: "THE TEST", paragraphs: ["Then one day when Leo and Liya reached the pyramids, the Queen announced", "“Today, I am going to take a test to see if you are ready. If you fail you both will have to train for the next few months.”", "Leo and Liya were scared. If they failed, they would have to do the training again.", "The Queen set up an obstacle course. It had swing ropes, climbing walls, swimming, maze and many other obstacles.", "“You have to work together and pass the test” said the Queen", "Leo and Liya got ready to start. The Queen started counting down to start.", "“3”", "“2”", "“1”", "“GO!”", "The first challenge was a chain of huge swinging objects like cushion balls and wooden logs. Leo and Liya ran between the obstacles.", "Next came the climbing wall which had handholds.", "“I will go first” said Leo, grabbing on to the handholds.", "Liya followed, holding on to the handhold tightly fearing not to let go.", "“Slow down, you are faster than me. Don’t leave me behind” cried out Liya.", "“Don’t worry, I won’t leave you behind” replied Leo, almost at the top.", "At last Leo reached the top. Liya was just behind him, but Liya’s foot slipped, Leo caught her hand just in time.", "“Thanks” said Liya.", "Next challenge, was a long pool with floating logs, across which they had to run to the other side.", "“Three more to go” said Liya.", "They stepped carefully from log to log, trying not to slip. Midway across Leo slipped, but Liya was close by, she caught hold of Leo’s hands.", "“Thanks” said Leo.", "The Queen was watching from above without any expression.", "They reached the dark, narrow and scary maze.", "“Stay Close” said Liya.", "They moved slowly, holding hands to stay together. The maze was foggy, which made it hard for them to navigate. They hit several dead ends on the way but finally made their way out of it.", "Now, in front of them stood a wooden platform and a long rope tied on another platform high up on the ceiling of the pyramid.", "“We have to climb that!” said Leo looking at it.", "“That’s right”, the Queen called down from above.", "They began climbing. Their hands burned as they climbed higher and higher. Their muscles began aching.", "“Don’t let go!” shouted Leo, trying his best to reach the top.", "“I’m trying!” said Liya", "Finally, they reached the top.", "“We made it!” shouted Leo and Liya in excitement.", "“Yes, you made it.” said the Queen, “You have proved that you have what it takes to be a hero. So, tomorrow you will receive your powers”", "That day Leo and Liya went home excited, imagining about the powers they were about to get."] },
+                { title: "GETTING POWERS", paragraphs: ["The next day, Leo and Liya woke up early in the morning. They were so excited to get their new powers. They left home telling their parents that they were going to see a friend.", "They got to the Museum as fast as they could. The Queen was waiting for them. She had decorated the room to celebrate the occasion.", "“Oh, you reached” exclaimed the queen surprised to see them very early.", "“Now it’s time for you to get your powers.” said the queen", "“For that I need you to stand here” said the queen pointing at two circles on the ground.", "Leo and Liya stood on the two circles. then the Queen held their hands.", "“Now, I want you to read the word on the wall in front of you.” said the queen, “When you read I want you to put your heart into it”", "Leo and Liya read the words on the wall.", "“As the guardian of Earth, I promise to protect this planet including its people from any harm and to make sure that everyone on Earth is safe.”", "When they completed reading the queen started saying something in a foreign language which Leo and Liya didn’t understand.", "Suddenly when the queen finished, Leo and Liya started floating in the air. Then, a white light blinded them.", "When they were able to see again they were in a knight’s armor made of gold and silver. There was a shining diamond in center of their chest plate.", "“Go on, test out your new powers” cried the Queen.", "“But, we don’t know how to use our powers” said Liya", "“Just try running, jumping and climbing.” said the queen", "But, Leo was way ahead of her and was already running around the room in super speed. Next, he tried climbing the tree that the queen had made them climb. This time he could climb it faster. He tried to lift a giant rock in the room. To Liya’s surprise Leo was throwing the rock up and down like it was a balloon.", "Next, Liya tried running, climbing and lifting things. Leo and Liya were so happy.", "“Ok, it’s getting late. you need to go home.” said the Queen", "“Queen, how do we take off this armor?” asked Liya.", "“Just press the diamond in the center of your chest plate.” answered the Queen.", "As soon as Liya pressed the diamond, the whole suit transformed into a necklace with a diamond on her neck. For Leo it turned into a ring with an emerald on it.", "“Tomorrow we will be practicing your powers” said the queen", "“Ok, bye, see you tomorrow” said Leo and Liya together", "“Bye” said the queen", "The next day, when they were going to leave the house, their mother asked “where are you both going every day, early in the morning?”", "Leo and Liya froze. They knew if their parents found out the mummies, they wouldn’t let them go.", "“We are going to the park to play with our friends” said Leo.", "“Oh, ok” said their mother “Here take some sandwiches for you and your friends”"] },
+                { title: "THE PRACTICE", paragraphs: ["The mummy queen was waiting for them when they reached the museum.", "“You are late” said the queen", "“Sorry” said Leo, who reached first", "“We were stopped midway by our mother” said Liya, who reached second.", "“Ok. Ready for practice” asked the queen", "“Yes” exclaimed both of them together", "“So, let’s get started” said the queen", "The Queen showed them how they could use their powers to control the different element of Nature, that is — Water, Air, Earth and Fire.", "They did as they were told to and eventually they mastered their powers.", "The Queen showed them different tricks and abilities they could use during a fight. They were able to learn it instantly. “You both are fast learners” commented the Queen.", "That’s when they noticed that the other mummies, the queen’s children were actually in another pyramid near them.", "“Queen, why haven’t your children started attacking?” asked Liya", "“They can’t” replied the Queen, “I have sealed their powers in 5 gems which are scattered all around the world. These gems are stored in different tombs in different countries”", "“Can’t you just keep the gems with you” asked Leo", "“No, I have grown old, so have my powers” answered the Queen", "“It’s getting late, you have to go home” said the Queen, “You can take a break. Come back after five days. If any emergencies, I will contact you through the ring and necklace”", "“Ok, bye” said Leo and Liya", "“Bye, see you in five days” said the Queen"] },
+                { title: "MISSING GEMS", paragraphs: ["Four days passed, they didn’t receive any emergency messages from the queen, so they enjoyed their break.", "Sometimes they would both go to the nearby park together to a hidden old region of the park to practice their powers. They even discovered some new powers. Then on the fifth day, when they were practicing their powers, a pigeon flew on to Leo’s shoulders. It had a piece of paper tied to its leg. Liya untied the note and read", "——————————————", "To Leo & Liya", "From the Queen", "My children have got two of the gems. Come quick. The world is in danger. They can use the gems to locate the other gems and get them. Come to the first pyramid in the museum.", "The Queen", "——————————————", "As soon as Liya finished reading, her necklace and Leo’s ring started to glow and a voice of the queen could be heard saying “Help, they have got the gems”", "Leo and Liya ran to the museum. But when they reached it, the museum was closed for maintenance. That’s when they remembered that there is a secret passage to the pyramid from outside the museum that the queen had told them about.", "They ran to the location that the queen had told them, it was near the old fountain at the back of the museum. From there they pulled the small statue of a horse on the fountain.", "Suddenly the fountain slowly disappeared into the ground and there was a long staircase going deep into the ground. They went down the staircase and found themselves in the pyramid. There they saw the queen waiting for them.", "“You’re here!” said the Queen", "“How did they get the gems?” asked Liya", "“I don’t know how. I’m the only one who knows the location of the gems.” replied the Queen", "“You said that the gems are scattered all around the world. Which all gems did they get?” asked Leo", "“The gems are stored in a secret ancient vault in 5 different places around the world — Egypt, Brazil, Japan, India and in this very museum.” answered the Queen, “The gems in Egypt and Brazil have been stolen”", "“How do you think they got the information about the gem’s location” asked Liya", "“A traitor, I think someone in this museum somehow got the information about the gem’s location and shared it with my children.” answered the Queen", "“Come! We have no time to lose” said the Queen, “They are going to get the gem kept in Japan next.”"] },
+                { title: "THE PLAN", paragraphs: ["TO BE CONTINUED……"] }
+            ]
+        };
+
+        let currentIdx = 0;
+
+        function render() {
+            const content = document.getElementById('main-content');
+            const chapter = bookData.chapters[currentIdx];
+            
+            content.classList.remove('fade-in');
+            void content.offsetWidth; // trigger reflow
+            content.classList.add('fade-in');
+
+            if (currentIdx === 0) {
+                content.innerHTML = `
+                    <div class="flex flex-col items-center justify-center space-y-12 py-10">
+                        <div class="w-64 h-80 border-2 border-dashed border-gray-400 flex items-center justify-center text-gray-400 font-title text-xs">
+                            [COVER IMAGE]
+                        </div>
+                        <div class="text-center space-y-6">
+                            <h1 class="text-5xl font-title font-black">${bookData.title.toUpperCase()}</h1>
+                            <div class="space-y-2 opacity-70 italic text-xl">
+                                <p>By: ${bookData.authors}</p>
+                                <p>By: ${bookData.authors}</p>
+                            </div>
+                        </div>
+                        <button onclick="nextChapter()" class="px-10 py-3 border-2 border-current font-title font-bold tracking-widest hover:bg-black/5">START READING</button>
+                    </div>
+                `;
+            } else {
+                let html = `
+                    <header class="text-center mb-16">
+                        <p class="text-xl mb-2">Chapter-${currentIdx}</p>
+                        <h2 class="text-3xl font-title font-bold uppercase tracking-widest">${chapter.title}</h2>
+                    </header>
+                    <div class="space-y-6 text-lg leading-relaxed text-justify">
+                `;
+
+                chapter.paragraphs.forEach((p, i) => {
+                    const isDialog = p.startsWith('“') || p.startsWith('"');
+                    if (i === 0 && !isDialog) {
+                        html += `<p><span class="drop-cap">${p.charAt(0)}</span>${p.slice(1)}</p>`;
+                    } else {
+                        html += `<p class="${isDialog ? 'pl-4 italic border-l-2 border-current/10' : ''}">${p}</p>`;
+                    }
+                });
+
+                html += `</div>`;
+                content.innerHTML = html;
+            }
+
+            document.getElementById('page-num').innerText = currentIdx === 0 ? "" : `Page ${currentIdx}`;
+            document.getElementById('prev-btn').style.opacity = currentIdx === 0 ? "0.2" : "1";
+            document.getElementById('next-btn').style.opacity = currentIdx === bookData.chapters.length - 1 ? "0.2" : "1";
+            window.scrollTo(0,0);
+        }
+
+        function nextChapter() { if(currentIdx < bookData.chapters.length - 1) { currentIdx++; render(); } }
+        function prevChapter() { if(currentIdx > 0) { currentIdx--; render(); } }
+        function setTheme(t) { document.body.className = 'theme-' + t; }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('hidden'); }
+
+        // Sidebar generation
+        const list = document.getElementById('chapter-list');
+        bookData.chapters.forEach((c, i) => {
+            const btn = document.createElement('button');
+            btn.className = "w-full text-left p-3 text-sm rounded hover:bg-black/5 font-bold";
+            btn.innerText = i === 0 ? "COVER PAGE" : `CHAPTER ${i}: ${c.title}`;
+            btn.onclick = () => { currentIdx = i; render(); toggleSidebar(); };
+            list.appendChild(btn);
+        });
+
+        render();
+    </script>
+</body>
+</html>
